@@ -2,14 +2,6 @@
 
 > Pixel-perfect, production-quality React landing page built from a Figma design. Fully responsive, jitter-free, and Vercel-ready.
 
-![Elementum Hero](https://i.pravatar.cc/900?img=33)
-
----
-
-## 🚀 Live Demo
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Rajdeep2922/Elementum)
-
 ---
 
 ## 📸 Preview
