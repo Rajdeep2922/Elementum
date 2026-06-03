@@ -1,16 +1,192 @@
-# React + Vite
+# Elementum — Frontend Assignment
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Pixel-perfect, production-quality React landing page built from a Figma design. Fully responsive, jitter-free, and Vercel-ready.
 
-Currently, two official plugins are available:
+![Elementum Hero](https://i.pravatar.cc/900?img=33)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🚀 Live Demo
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Rajdeep2922/Elementum)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📸 Preview
+
+| Section | Description |
+|---|---|
+| **Hero** | Full-screen headline with pill highlights, avatar grid, decorative shapes |
+| **Progress** | Alternating content + circular image blocks with red triangle accents |
+| **Services** | "What we can offer you!" — stagger-animated service rows |
+| **Testimonials** | Floating avatar ring around a paginated testimonial card |
+| **Newsletter** | Green CTA section with purple teardrop decoration |
+| **Footer** | 4-column responsive layout with contact info |
+
+---
+
+## 🛠️ Tech Stack
+
+| Tool | Purpose |
+|---|---|
+| [React 18](https://react.dev/) | UI library |
+| [Vite](https://vitejs.dev/) | Build tool & dev server |
+| [CSS Modules](https://github.com/css-modules/css-modules) | Scoped, modular styles |
+| [Framer Motion](https://www.framer.com/motion/) | Scroll-triggered animations |
+| [Vercel](https://vercel.com/) | Deployment |
+
+> **No Bootstrap. No Material UI. No jQuery. No Tailwind.**
+
+---
+
+## 📁 Folder Structure
+
+```
+src/
+├── components/
+│   ├── Navbar/               # Sticky blur navbar + hamburger drawer
+│   ├── Hero/                 # Full-screen headline + avatar grid
+│   ├── ProgressSection/      # Alternating content + circular image blocks
+│   ├── ServicesSection/      # Animated service rows list
+│   ├── Testimonials/         # Floating avatar ring + paginated card
+│   ├── Newsletter/           # Green CTA section
+│   ├── Footer/               # 4-column footer
+│   ├── SectionHeading/       # Reusable heading with pill highlights
+│   ├── AvatarGroup/          # Overlapping circular avatar images
+│   └── DecorativeShapes/     # Inline SVG organic shapes
+│
+├── data/
+│   └── teamMembers.js        # All site data (team, services, testimonials)
+│
+├── pages/
+│   └── Home.jsx              # Single-page layout assembly
+│
+├── App.jsx
+├── main.jsx
+└── index.css                 # Global design tokens & reset
+```
+
+---
+
+## 🎨 Design System
+
+```css
+/* Colors */
+--bg:      #f8f8f8   /* Page background       */
+--text:    #111111   /* Primary text           */
+--green:   #dfeadf   /* Pill highlights, CTA bg */
+--purple:  #8d5cf6   /* Accent, links          */
+--orange:  #f5b640   /* Underline strokes      */
+--pink:    #f7b8d6   /* Hero pill, wave shapes */
+
+/* Responsive Typography */
+font-size: clamp(2.4rem, 6vw, 5.5rem);   /* Hero headline */
+font-size: clamp(2rem,   4vw, 3.25rem);  /* Section headings */
+```
+
+---
+
+## ⚡ Getting Started
+
+### Prerequisites
+- Node.js `v18+`
+- npm `v9+`
+
+### Install & Run
+
+```bash
+# Clone the repo
+git clone https://github.com/Rajdeep2922/Elementum.git
+cd Elementum
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### Build for Production
+
+```bash
+npm run build     # Outputs to /dist
+npm run preview   # Preview the production build locally
+```
+
+---
+
+## 📱 Responsive Breakpoints
+
+| Breakpoint | Width | Behaviour |
+|---|---|---|
+| **Mobile** | `< 768px` | Stacked layout, hamburger menu, reduced avatars |
+| **Tablet** | `768px – 1024px` | Narrower circles, adjusted grid |
+| **Desktop** | `> 1024px` | Full layout with decorative shapes |
+
+---
+
+## ⚙️ Performance & Accessibility
+
+### Performance
+- ✅ GPU-composited animations (`transform` + `opacity` only — no layout triggers)
+- ✅ `backdrop-filter` disabled on mobile (expensive on Android GPUs)
+- ✅ All hover effects gated behind `@media (hover: hover) and (pointer: fine)` — no sticky-hover on touch
+- ✅ Framer Motion `useReducedMotion()` — animations skipped for users who prefer it
+- ✅ rAF-throttled scroll listener (no forced layout on every frame)
+- ✅ Explicit `width` / `height` + `aspect-ratio` on every `<img>` (zero CLS)
+- ✅ `loading="lazy"` + `decoding="async"` on all below-fold images
+- ✅ `will-change` released in mobile breakpoints to free GPU memory
+- ✅ Vendor chunk splitting for long-term caching
+- ✅ Stable asset filename hashing (`[name]-[hash].js`)
+
+### Accessibility
+- ✅ Semantic HTML — `<header>`, `<nav>`, `<main>`, `<section>`, `<footer>`, `<address>`
+- ✅ `aria-label`, `aria-labelledby`, `aria-expanded`, `aria-controls` throughout
+- ✅ `role="list"` / `role="listitem"` on dynamic lists
+- ✅ Visible `focus-visible` ring on all interactive elements
+- ✅ Screen-reader-only headings via `.sr-only`
+- ✅ `prefers-reduced-motion` CSS override kills all transitions globally
+- ✅ 44×44px minimum touch targets on hamburger button
+
+---
+
+## 🚢 Deployment (Vercel)
+
+The repo includes a [`vercel.json`](./vercel.json) with:
+- **SPA routing** — all routes rewrite to `/index.html`
+- **Immutable cache** — `/assets/*` files cached for 1 year
+- **Security headers** — `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`
+
+### One-click deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Rajdeep2922/Elementum)
+
+Or manually:
+1. Push to GitHub
+2. Import repo at [vercel.com/new](https://vercel.com/new)
+3. Framework auto-detected as **Vite** → click **Deploy** ✅
+
+---
+
+## 🧩 Component Reference
+
+| Component | Props | Description |
+|---|---|---|
+| `SectionHeading` | `center`, `subtitle` | Reusable heading wrapper |
+| `Highlight` | `color`, `underline` | Pill highlight span inside headings |
+| `AvatarGroup` | `members`, `size`, `max` | Overlapping circular avatar row |
+| `PurpleTeardrop` | `style`, `animate` | SVG teardrop decorative shape |
+| `PinkWave` | `style` | SVG wavy stroke decoration |
+| `CurvedLine` | `style`, `color` | SVG curved connector line |
+
+---
+
+## 📄 License
+
+MIT © 2024 Rajdeep
+
+---
+
+<p align="center">Built with ❤️ using React + Vite</p>
