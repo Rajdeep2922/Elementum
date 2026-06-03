@@ -1,0 +1,144 @@
+/* ============================================================
+   ServicesSection — "What we can offer you!" list
+   JITTER FIXES:
+   - Row hover uses transform:translateX, NOT padding-left
+     (padding triggers layout reflow; transform is composited)
+   - Arrow rotation via transform (already composited)
+   - Hover gated behind (hover:hover) to prevent sticky-hover on touch
+   - contain:layout on .list to isolate row paints
+   ============================================================ */
+
+.section {
+  padding: var(--sp-7) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---------- Header ---------- */
+.header {
+  margin-bottom: var(--sp-6);
+}
+
+.header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.canPill {
+  background: var(--green);
+  border-radius: var(--r-full);
+  padding: 2px 14px;
+  font-style: normal;
+}
+
+.offerUnderline {
+  text-decoration: underline;
+  text-decoration-color: var(--orange);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
+}
+
+/* ---------- Service rows ---------- */
+.list {
+  border-top: 1px solid var(--border);
+  /* Isolate paint — row hovers don't repaint the whole section */
+  contain: layout style;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-2);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  border-radius: var(--r-sm);
+  /*
+   * Only transition composited properties — transform & background.
+   * background is a paint op but cheap; padding-left would be layout.
+   */
+  transition: background var(--ease-fast), transform var(--ease-fast);
+  /* GPU layer prep — promotes immediately so first hover doesn't stutter */
+  transform: translateX(0) translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Scoped to real pointer devices — eliminates sticky-hover on mobile */
+@media (hover: hover) and (pointer: fine) {
+  .row:hover {
+    background: #f5f5f5;
+    transform: translateX(10px) translateZ(0);
+  }
+
+  .row:hover .arrow {
+    border-color: var(--text);
+    background: var(--text);
+    color: var(--bg);
+    transform: rotate(-45deg);
+  }
+}
+
+/* Left: small description */
+.desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 220px;
+}
+
+/* Center: service title */
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.5vw, 1.75rem);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+
+/* Right: arrow circle */
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  /* Composited transform for rotation */
+  transition: border-color var(--ease-fast), background var(--ease-fast), transform var(--ease-fast);
+  will-change: transform;
+}
+
+/* Decorative curve top-right */
+.curve {
+  position: absolute;
+  top: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .row {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    /* Disable will-change on mobile to save GPU memory */
+    will-change: auto;
+    transform: none;
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+  }
+
+  .desc {
+    grid-column: 1 / -1;
+    font-size: 0.75rem;
+  }
+
+  .title { font-size: 1.1rem; }
+}

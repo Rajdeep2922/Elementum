@@ -1,0 +1,95 @@
+/* ============================================================
+   Footer
+   ============================================================ */
+
+.footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: var(--sp-6) 0 var(--sp-3);
+}
+
+/* ---------- 4-column grid ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-5);
+}
+
+/* ---------- Column ---------- */
+.col h3 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--sp-2);
+  letter-spacing: 0.02em;
+}
+
+.col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.col ul li a {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: color var(--ease);
+}
+
+.col ul li a:hover {
+  color: var(--purple);
+}
+
+/* Contact column specifics */
+.contact p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.contact a {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: color var(--ease);
+  display: block;
+  margin-top: 8px;
+}
+
+.contact a:hover {
+  color: var(--purple);
+}
+
+/* ---------- Divider ---------- */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0 0 var(--sp-3);
+}
+
+/* ---------- Bottom bar ---------- */
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--sp-4) var(--sp-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

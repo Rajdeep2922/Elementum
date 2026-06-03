@@ -1,0 +1,181 @@
+/* ============================================================
+   Navbar Component Styles
+   JITTER FIXES:
+   - Underline uses transform:scaleX (composited), NOT width change (layout)
+   - backdrop-filter disabled on mobile — major GPU cost on Android
+   - will-change only on actively-transitioning element
+   - Hamburger spans: pure transform animation, zero layout impact
+   - Touch devices get a solid background instead of blur (performance)
+   ============================================================ */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: var(--navbar-h);
+  display: flex;
+  align-items: center;
+  /* Promote navbar to its own compositor layer from the start.
+     This prevents the page content beneath from repainting on scroll. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: background var(--ease-fast), box-shadow var(--ease-fast);
+}
+
+/* Scrolled state */
+.scrolled {
+  background: rgba(248, 248, 248, 0.88);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Blur only on capable pointer devices (desktops).
+   backdrop-filter is prohibitively expensive on most Android GPUs. */
+@media (hover: hover) and (pointer: fine) {
+  .scrolled {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    will-change: backdrop-filter;
+  }
+}
+
+.navbarInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--sp-3);
+}
+
+/* Logo */
+.navbarLogo {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  /* opacity-only transition — composited, no paint */
+  transition: opacity var(--ease-fast);
+}
+
+@media (hover: hover) {
+  .navbarLogo:hover { opacity: 0.7; }
+}
+
+/* Desktop nav links */
+.navbarLinks {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.navbarLink {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  position: relative;
+  padding: 4px 0;
+  transition: color var(--ease-fast);
+  /* Prevent sub-pixel rendering jitter on retina displays */
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Underline via scaleX transform — 100% composited, ZERO layout reflow.
+ * Old "width: 0 → 100%" approach triggers layout on every frame.
+ */
+.navbarLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;           /* full-width always; visibility via scale */
+  height: 2px;
+  background: var(--purple);
+  border-radius: var(--r-full);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--ease-fast);
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .navbarLink:hover { color: var(--purple); }
+  .navbarLink:hover::after { transform: scaleX(1); }
+}
+
+/* ---------- Hamburger ---------- */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  border-radius: var(--r-sm);
+  transition: background var(--ease-fast);
+  /* Large enough touch target (44×44 recommended) */
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (hover: hover) {
+  .hamburger:hover { background: var(--green); }
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: var(--r-full);
+  /* Pure transform — composited, no layout */
+  transition: transform var(--ease), opacity var(--ease);
+  will-change: transform, opacity;
+}
+
+/* → X morph */
+.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ---------- Mobile drawer ---------- */
+.drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  /* Solid background on mobile — no backdrop-filter cost */
+  background: rgba(248, 248, 248, 0.98);
+}
+
+/* Blur only on capable devices */
+@media (hover: hover) and (pointer: fine) {
+  .drawer {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: rgba(248, 248, 248, 0.92);
+  }
+}
+
+.drawer .navbarLink {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .navbarLinks { display: none; }
+  .hamburger   { display: flex; }
+
+  /* Release will-change on mobile to free GPU memory */
+  .hamburger span    { will-change: auto; }
+  .navbarLink::after { will-change: auto; }
+}

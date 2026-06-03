@@ -1,0 +1,49 @@
+/* ============================================================
+   AvatarGroup — overlapping circular avatar images
+   JITTER FIXES:
+   - Hover uses transform:translateY (composited)
+   - GPU layer via translateZ(0)
+   - Hover gated behind (hover:hover) and (pointer:fine)
+   - aspect-ratio on img prevents CLS
+   ============================================================ */
+
+.group {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid var(--bg-white);
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+  margin-left: -14px;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: transform var(--ease-bounce);
+  will-change: transform;
+}
+
+.avatar:first-child {
+  margin-left: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .avatar:hover {
+    transform: translateY(-4px) scale(1.08) translateZ(0);
+    z-index: 10;
+  }
+}
+
+/* Size variants */
+.groupSm .avatar { width: 36px; height: 36px; margin-left: -10px; }
+.groupLg .avatar { width: 64px; height: 64px; margin-left: -18px; }
+
+@media (max-width: 768px) {
+  .avatar { will-change: auto; }
+}

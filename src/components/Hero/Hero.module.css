@@ -1,0 +1,154 @@
+/* ============================================================
+   Hero Section
+   JITTER FIXES:
+   - Avatar images: transform+backface-visibility for GPU compositing
+   - Hover gated behind (hover:hover) and (pointer:fine)
+   - Decorative shape float animation disabled on mobile
+   - Pill highlights use inline-block (not inline) to avoid reflow
+   ============================================================ */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding-top: calc(var(--navbar-h) + var(--sp-5));
+  padding-bottom: var(--sp-7);
+  text-align: center;
+  background: var(--bg);
+  /* Isolate the hero paint from scroll-linked navbar repaints */
+  contain: layout;
+}
+
+/* ---------- Headline ---------- */
+.headline {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -1px;
+  color: var(--text);
+  max-width: 820px;
+  margin: 0 auto var(--sp-3);
+  position: relative;
+  z-index: 1;
+}
+
+/* Pill highlights — inline-block reserves space before font loads (CLS) */
+.pillPink {
+  background: var(--pink);
+  border-radius: var(--r-full);
+  padding: 2px 16px;
+  display: inline-block;
+}
+
+.pillGreen {
+  background: var(--green);
+  border-radius: var(--r-full);
+  padding: 2px 16px;
+  display: inline-block;
+}
+
+.underline {
+  text-decoration: underline;
+  text-decoration-color: var(--orange);
+  text-decoration-thickness: 4px;
+  text-underline-offset: 6px;
+}
+
+/* ---------- Subtext ---------- */
+.sub {
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto var(--sp-5);
+  line-height: 1.75;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Avatar grid ---------- */
+.avatars {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--sp-3);
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.avatarItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.avatarImg {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  /* Lock aspect ratio — prevents CLS if image loads late */
+  aspect-ratio: 1 / 1;
+  border: 3px solid var(--bg-white);
+  box-shadow: var(--shadow-md);
+  /* GPU compositing layer */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: transform var(--ease-bounce);
+  will-change: transform;
+}
+
+/* Hover only on real pointer devices — no sticky-hover on touch */
+@media (hover: hover) and (pointer: fine) {
+  .avatarImg:hover {
+    transform: translateY(-6px) scale(1.08) translateZ(0);
+  }
+}
+
+/* Variable avatar sizes */
+.avatarSm .avatarImg { width: 64px;  height: 64px;  }
+.avatarMd .avatarImg { width: 80px;  height: 80px;  }
+.avatarLg .avatarImg { width: 100px; height: 100px; }
+
+/* ---------- Decorative shapes ---------- */
+.shapeWave {
+  position: absolute;
+  left: -10px;
+  top: 30%;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.shapeTeardrop {
+  position: absolute;
+  right: 6%;
+  top: 22%;
+  pointer-events: none;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .hero { contain: none; } /* contain:layout can clip mobile-overflow on some browsers */
+
+  .headline {
+    font-size: clamp(1.9rem, 8vw, 3rem);
+    letter-spacing: -0.5px;
+  }
+
+  .avatarImg    { width: 56px; height: 56px; will-change: auto; }
+  .avatarSm .avatarImg { width: 48px; height: 48px; }
+  .avatarLg .avatarImg { width: 68px; height: 68px; }
+
+  /* Hide decorative shapes — saves two extra GPU paint layers on mobile */
+  .shapeWave,
+  .shapeTeardrop { display: none; }
+}

@@ -1,0 +1,106 @@
+/* ============================================================
+   Newsletter Section
+   JITTER FIXES:
+   - Button hover uses transform:scale (composited) — already correct
+   - Scale pre-promoted to GPU layer via translateZ
+   - Hover gated behind (hover:hover) to avoid touch-tap jitter
+   ============================================================ */
+
+.section {
+  background: var(--green);
+  padding: var(--sp-7) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--sp-3);
+  position: relative;
+  z-index: 1;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+  max-width: 640px;
+}
+
+.sub {
+  font-size: 1rem;
+  color: var(--text-muted);
+  max-width: 420px;
+}
+
+/* CTA Button */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  background: var(--text);
+  color: var(--bg-white);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 14px 36px;
+  border-radius: var(--r-full);
+  border: none;
+  cursor: pointer;
+  margin-top: var(--sp-1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  /*
+   * transform + box-shadow on hover — both composited.
+   * Pre-promote to GPU so first hover doesn't stutter.
+   */
+  transform: scale(1) translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: transform var(--ease-bounce), box-shadow var(--ease-fast), background var(--ease-fast);
+  will-change: transform;
+  /* Prevent double-tap zoom on mobile */
+  touch-action: manipulation;
+}
+
+@media (hover: hover) {
+  .btn:hover {
+    transform: scale(1.05) translateZ(0);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+    background: #222;
+  }
+}
+
+.btn:active {
+  transform: scale(0.98) translateZ(0);
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--purple);
+  outline-offset: 3px;
+}
+
+/* Decorative shapes */
+.shapePurple {
+  position: absolute;
+  bottom: -20px;
+  right: 6%;
+  pointer-events: none;
+}
+
+.shapePinkCurve {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .heading { font-size: clamp(1.8rem, 8vw, 2.8rem); }
+  /* Release GPU layer on mobile */
+  .btn { will-change: auto; }
+}

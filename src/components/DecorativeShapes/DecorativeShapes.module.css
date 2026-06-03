@@ -1,0 +1,35 @@
+/* ============================================================
+   DecorativeShapes — SVG blobs and organic shapes
+   JITTER FIXES:
+   - Float animation disabled on mobile (saves a GPU composite layer)
+   - prefers-reduced-motion disables all shape animation
+   ============================================================ */
+
+.shape {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Floating animation — only runs on desktop pointer devices */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-12px) rotate(3deg); }
+  66%       { transform: translateY(6px) rotate(-2deg); }
+}
+
+/* Gate animation: only on hover-capable (desktop) devices */
+@media (hover: hover) and (pointer: fine) {
+  .animate {
+    animation: float 7s ease-in-out infinite;
+    will-change: transform;
+  }
+}
+
+/* Respect OS reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .animate {
+    animation: none !important;
+    will-change: auto !important;
+  }
+}

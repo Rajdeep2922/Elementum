@@ -1,0 +1,221 @@
+/* ============================================================
+   ProgressSection — alternating content + image blocks
+   JITTER FIXES:
+   - Replaced `direction: rtl` trick with flexbox `order` (no reflow)
+   - readMore hover uses transform, not gap (gap triggers layout)
+   - circle hover uses transform only (composited, no paint)
+   - imageWrap uses contain: layout to isolate paint
+   ============================================================ */
+
+.section {
+  padding: var(--sp-7) 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ---------- Individual block ---------- */
+.block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sp-6);
+  margin-bottom: var(--sp-7);
+  position: relative;
+}
+
+/*
+ * Reverse layout using flex order — ZERO reflow (no direction/rtl).
+ * `order` is composited and doesn't trigger layout recalculation.
+ */
+.blockReverse .imageWrap {
+  order: -1;
+}
+
+/* ---------- Text side ---------- */
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  flex: 1;
+  min-width: 0; /* prevent overflow in flex */
+}
+
+.tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: var(--sp-1);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.title em {
+  font-style: italic;
+  color: var(--text);
+}
+
+.body {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+  max-width: 420px;
+}
+
+/* "Read more" link
+ * Arrow moves via transform (composited), NOT gap change (layout trigger).
+ */
+.readMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: var(--sp-1);
+  transition: color var(--ease-fast);
+  position: relative;
+  width: fit-content;
+}
+
+.readMoreArrow {
+  flex-shrink: 0;
+  transition: transform var(--ease-fast);
+  will-change: transform;
+}
+
+/* Underline via scaleX — composited, no paint */
+.readMore::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0.35);
+  transform-origin: left;
+  transition: transform var(--ease-fast);
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .readMore:hover {
+    color: var(--purple);
+  }
+  .readMore:hover .readMoreArrow {
+    transform: translateX(5px);
+  }
+  .readMore:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------- Image side ---------- */
+.imageWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  /* Isolate paint — changes inside don't repaint the whole section */
+  contain: layout style;
+}
+
+.circle {
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  z-index: 1;
+  /* Promote to GPU layer — transform triggers composite, not paint */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: transform var(--ease);
+  will-change: transform;
+}
+
+.circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* Lock aspect ratio to prevent CLS */
+  aspect-ratio: 1 / 1;
+  transition: transform 0.45s ease;
+  will-change: transform;
+}
+
+/* Hover only on pointer devices — prevents sticky-hover on iOS/Android */
+@media (hover: hover) and (pointer: fine) {
+  .circle:hover            { transform: translateY(-5px) translateZ(0); }
+  .circle:hover img        { transform: scale(1.04); }
+}
+
+/* Decorative triangles */
+.tri {
+  position: absolute;
+  width: 0;
+  height: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.triRedTop {
+  border-left: 28px solid transparent;
+  border-right: 28px solid transparent;
+  border-bottom: 48px solid #e74c3c;
+  top: 10px;
+  right: 30px;
+}
+
+.triRedBottom {
+  border-left: 22px solid transparent;
+  border-right: 22px solid transparent;
+  border-top: 38px solid #e74c3c;
+  bottom: 20px;
+  left: 20px;
+}
+
+/* ---------- Curved connector line ---------- */
+.connector {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .circle { width: 320px; height: 320px; }
+}
+
+@media (max-width: 768px) {
+  .block {
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+
+  /* On mobile both layouts: image always on top */
+  .blockReverse .imageWrap { order: unset; }
+  .imageWrap                { order: -1; }
+
+  .circle  { width: 240px; height: 240px; }
+  .connector { display: none; }
+
+  /* Disable will-change on mobile to save GPU memory */
+  .circle   { will-change: auto; }
+  .circle img { will-change: auto; }
+}

@@ -1,0 +1,204 @@
+/* ============================================================
+   ELEMENTUM — Global Design Tokens, Reset & Performance Layer
+   ============================================================ */
+
+/* ---------- CSS Variables (Design Tokens) ---------- */
+:root {
+  --bg: #f8f8f8;
+  --bg-white: #ffffff;
+  --text: #111111;
+  --text-muted: #6b7280;
+  --green: #dfeadf;
+  --green-dark: #b8d4b8;
+  --purple: #8d5cf6;
+  --orange: #f5b640;
+  --pink: #f7b8d6;
+  --pink-light: #fce4f0;
+  --border: #e5e7eb;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+
+  /* Radius */
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-full: 999px;
+
+  /* Spacing */
+  --sp-1: 8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-5: 48px;
+  --sp-6: 64px;
+  --sp-7: 96px;
+
+  /* Typography */
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+
+  /* Transitions — used throughout; respects reduced-motion via override below */
+  --ease: 0.3s ease;
+  --ease-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-fast: 0.18s ease;
+
+  /* Navbar height — kept in sync between CSS and JS via this single token */
+  --navbar-h: 72px;
+
+  /*
+   * Stable scrollbar width prevents layout shift (CLS) when modals or
+   * overlays set overflow:hidden on <body>.
+   */
+  scrollbar-gutter: stable;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* Smooth scroll only when the user hasn't requested reduced motion */
+  scroll-behavior: smooth;
+  font-size: 16px;
+  /* Prevent iOS font-size inflation */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  /* Sub-pixel antialiasing on Mac/retina; grayscale on others */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Never horizontal-scroll */
+  overflow-x: hidden;
+  /* Avoid content jumping behind the fixed navbar on page load */
+  padding-top: 0;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  /* Prevent broken-image boxes from causing layout shift */
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  /* Prevent double-tap zoom on iOS */
+  touch-action: manipulation;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* ---------- Focus-visible global ring ---------- */
+:focus-visible {
+  outline: 3px solid var(--purple);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ---------- GPU compositing helpers ---------- */
+/*
+ * Elements that animate with transform or opacity are promoted to their own
+ * GPU layer, eliminating paint-triggered jitter during scroll.
+ * Applied via a utility class rather than blanket rules to avoid excess layers.
+ */
+.will-animate {
+  will-change: transform, opacity;
+  /* Force GPU compositing */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ---------- Utility classes ---------- */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--sp-3);
+}
+
+.section {
+  padding: var(--sp-7) 0;
+}
+
+.section--sm {
+  padding: var(--sp-5) 0;
+}
+
+/* Visually hidden (a11y) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Reduced-motion overrides ---------- */
+/*
+ * WCAG 2.1 — disable all animations for users who opt out.
+ * This also prevents animation-triggered layout shifts on low-power devices.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Tell Framer Motion to skip animations (detected via JS below too) */
+  :root {
+    --ease: 0s;
+    --ease-bounce: 0s;
+    --ease-fast: 0s;
+  }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  .navbar,
+  .hero__shape-wave,
+  .hero__shape-teardrop {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+}
