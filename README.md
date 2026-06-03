@@ -144,24 +144,6 @@ npm run preview   # Preview the production build locally
 
 ---
 
-## 🚢 Deployment (Vercel)
-
-The repo includes a [`vercel.json`](./vercel.json) with:
-- **SPA routing** — all routes rewrite to `/index.html`
-- **Immutable cache** — `/assets/*` files cached for 1 year
-- **Security headers** — `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`
-
-### One-click deploy
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Rajdeep2922/Elementum)
-
-Or manually:
-1. Push to GitHub
-2. Import repo at [vercel.com/new](https://vercel.com/new)
-3. Framework auto-detected as **Vite** → click **Deploy** ✅
-
----
-
 ## 🧩 Component Reference
 
 | Component | Props | Description |
